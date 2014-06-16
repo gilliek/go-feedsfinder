@@ -21,7 +21,7 @@ const (
 	atomMIME = "application/atom+xml"
 )
 
-// Link holds information a link to a RSS or Atom feed.
+// Link holds information about a link to a RSS or Atom feed.
 type Link struct {
 	// URL contains the reference to the RSS/Atom feed.
 	URL string
