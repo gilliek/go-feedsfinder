@@ -5,6 +5,9 @@
 package feeds
 
 import (
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 )
@@ -28,6 +31,22 @@ func TestFind(t *testing.T) {
 	links, err := Find([]byte(htmlCode))
 	if err != nil {
 		t.Fatal(links)
+	}
+
+	testResults(t, links)
+}
+
+func TestFindFromURL(t *testing.T) {
+	handler := func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, htmlCode)
+	}
+
+	server := httptest.NewServer(http.HandlerFunc(handler))
+	defer server.Close()
+
+	links, err := FindFromURL(server.URL)
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	testResults(t, links)
