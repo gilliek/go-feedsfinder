@@ -44,8 +44,8 @@ See the document for more details.
 
 ## Documentation
 
-Document can be found on [GoWalker](https://gowalker.org/github.com/gilliek/go-opml/opml) 
-or [GoDoc](http://godoc.org/github.com/gilliek/go-opml/opml)
+Document can be found on [GoWalker](https://gowalker.org/github.com/gilliek/go-feedsfinder/feeds) 
+or [GoDoc](http://godoc.org/github.com/gilliek/go-feedsfinder/feeds)
 
 ## License
 
