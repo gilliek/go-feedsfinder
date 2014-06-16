@@ -9,7 +9,6 @@ package feeds
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -54,7 +53,7 @@ func FindFromURL(url string) ([]Link, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		return []Link{}, errors.New(fmt.Errorf("Invalid URL: HTTP status %s", resp.Status))
+		return []Link{}, fmt.Errorf("Invalid URL: HTTP status %s", resp.Status)
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
