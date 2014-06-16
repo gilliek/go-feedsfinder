@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+/*
+Package feeds provides functions for finding RSS/Atom feeds in a web page.
+*/
 package feeds
 
 import (
@@ -19,11 +22,16 @@ const (
 	atomMIME = "application/atom+xml"
 )
 
+// Link holds information a link to a RSS or Atom feed.
 type Link struct {
-	URL  string
+	// URL contains the reference to the RSS/Atom feed.
+	URL string
+
+	// Type is the type of the feed. It can be either "rss" or "atom".
 	Type string
 }
 
+// Find finds RSS/Atom feeds in a web page given as a byte slice.
 func Find(b []byte) ([]Link, error) {
 	var links []Link
 
@@ -37,6 +45,7 @@ func Find(b []byte) ([]Link, error) {
 	return links, nil
 }
 
+// FindFromURL finds RSS/Atom feeds in a web page given as an URL.
 func FindFromURL(url string) ([]Link, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -45,7 +54,7 @@ func FindFromURL(url string) ([]Link, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 400 {
-		return []Link{}, errors.New(fmt.Sprintf("Invalid URL: HTTP status %s", resp.Status))
+		return []Link{}, errors.New(fmt.Errorf("Invalid URL: HTTP status %s", resp.Status))
 	}
 
 	b, err := ioutil.ReadAll(resp.Body)
@@ -56,6 +65,7 @@ func FindFromURL(url string) ([]Link, error) {
 	return Find(b)
 }
 
+// FindFromFile finds RSS/Atom feeds in a web page given as a file path.
 func FindFromFile(filePath string) ([]Link, error) {
 	b, err := ioutil.ReadFile(filePath)
 	if err != nil {
@@ -65,6 +75,7 @@ func FindFromFile(filePath string) ([]Link, error) {
 	return Find(b)
 }
 
+// parse recursively parses a HTML page.
 func parse(n *html.Node, links *[]Link) {
 	if n.Type == html.ElementNode && n.Data == "body" {
 		return
