@@ -28,7 +28,7 @@ const (
 )
 
 func TestFind(t *testing.T) {
-	links, err := Find([]byte(htmlCode))
+	links, err := Find([]byte(htmlCode), "")
 	if err != nil {
 		t.Fatal(links)
 	}
@@ -53,12 +53,73 @@ func TestFindFromURL(t *testing.T) {
 }
 
 func TestFindFromFile(t *testing.T) {
-	links, err := FindFromFile(os.Getenv("GOPATH") + "/src/github.com/gilliek/go-feedsfinder/testdata/index.html")
+	links, err := FindFromFile(os.Getenv("GOPATH")+"/src/github.com/gilliek/go-feedsfinder/testdata/index.html", "")
 	if err != nil {
 		t.Fatal(links)
 	}
 
 	testResults(t, links)
+}
+
+func TestFormatLink(t *testing.T) {
+	href1 := "https://www.foo.com/atom.xml"
+	baseURL1 := "http://www.foo.com"
+
+	if res, _ := formatLink(href1, baseURL1); res != href1 {
+		t.Errorf("Invalid feed link: expected '%s', found '%s'", href1, res)
+	}
+
+	const expected = "http://www.foo.com/atom.xml"
+
+	href2 := "http://www.foo.com/atom.xml"
+	baseURL2 := "http://www.foo.com"
+
+	if res, _ := formatLink(href2, baseURL2); res != expected {
+		t.Errorf("Invalid feed link: expected '%s', found '%s'", expected, res)
+	}
+
+	href3 := "/atom.xml"
+	baseURL3 := "http://www.foo.com/"
+
+	if res, _ := formatLink(href3, baseURL3); res != expected {
+		t.Errorf("Invalid feed link: expected '%s', found '%s'", expected, res)
+	}
+
+	href4 := "/atom.xml"
+	baseURL4 := "http://www.foo.com"
+
+	if res, _ := formatLink(href4, baseURL4); res != expected {
+		t.Errorf("Invalid feed link: expected '%s', found '%s'", expected, res)
+	}
+
+	href5 := "atom.xml"
+	baseURL5 := "http://www.foo.com"
+
+	if res, _ := formatLink(href5, baseURL5); res != expected {
+		t.Errorf("Invalid feed link: expected '%s', found '%s'", expected, res)
+	}
+
+	href6 := "atom.xml"
+	baseURL6 := "http://www.foo.com/index.html"
+
+	if res, _ := formatLink(href6, baseURL6); res != expected {
+		t.Errorf("Invalid feed link: expected '%s', found '%s'", expected, res)
+	}
+
+	href7 := "atom.xml"
+	baseURL7 := "http://www.foo.com/bar/index"
+
+	if res, _ := formatLink(href7, baseURL7); res != "http://www.foo.com/bar/atom.xml" {
+		t.Errorf("Invalid feed link: expected 'http://www.foo.com/bar/atom.xml', found '%s'", res)
+	}
+
+	href8 := "/atom.xml"
+	baseURL8 := "http://www.foo.com/bar/index"
+
+	if res, _ := formatLink(href8, baseURL8); res != expected {
+		t.Errorf("Invalid feed link: expected '%s', found '%s'", expected, res)
+	}
+
 }
 
 func testResults(t *testing.T, links []Link) {
