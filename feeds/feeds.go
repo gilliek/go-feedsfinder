@@ -103,7 +103,10 @@ func parse(n *html.Node, links *[]Link, baseURL string) {
 		}
 
 		if hrefAttr != "" && typeAttr != "" {
-			*links = append(*links, Link{URL: hrefAttr, Type: typeAttr})
+			// TODO error handling
+			url, _ := formatLink(hrefAttr, baseURL)
+
+			*links = append(*links, Link{URL: url, Type: typeAttr})
 		}
 	}
 
